@@ -6,9 +6,9 @@
 
 ### The quirk-solving microsecond timing facade — `ESTIMER.prime()` / `now()` / `measureUs()` / `median()` / `stopwatch()` / `calibrate()` / `sleep()` / `stats()` — a monotonic, wrap-corrected delta clock over `$.hiresTimer` + `Date` for Adobe Illustrator, InDesign, Photoshop & any ExtendScript host
 
-[![Clock: monotonic wrap-corrected](https://img.shields.io/badge/clock-monotonic%20wrap%20corrected-success)](https://extendscript.docsforadobe.dev/)
+[![Clock: monotonic wrap-corrected](https://img.shields.io/badge/clock-monotonic%20wrap%20corrected-success)](#engine-quirks-that-shaped-the-design)
 [![Differential: reference model](https://img.shields.io/badge/differential-vs%20reference%20model%202.0M%2B%20checks-purple)](#validation)
-[![Engine parity: live](https://img.shields.io/badge/engine%20parity-live%2056%2F56%20checks-green)](https://extendscript.docsforadobe.dev/)
+[![Engine parity: live](https://img.shields.io/badge/engine%20parity-live%2056%2F56%20checks-green)](#validation)
 [![Adobe: Creative Suite](https://img.shields.io/badge/Adobe%20-Creative%20Suite-red?logo=adobe&logoColor=white)](https://extendscript.docsforadobe.dev/)
 [![Engine](https://img.shields.io/badge/ExtendScript-ES3-green)](#compatibility)
 [![Size](https://img.shields.io/badge/runtime-13.7%20KB-orange)](#installation)
