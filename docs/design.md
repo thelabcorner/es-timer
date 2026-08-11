@@ -60,11 +60,18 @@ the result as a **64-bit double** (`ScCore::Variant::setDouble`) — there is no
 signed-32-bit delta arithmetic in ExtendScript.dll, all host-side, so the wrap
 never surfaces as a negative read (verified live: 10k consecutive reads,
 wrapped-territory 60 s spans, a wrap-straddling interval, and the transient
-wrap-span read were all positive). The `'correct'` +2^32 policy is therefore a
-deterministic **safety net for fake/adversarial sources**, not a live-path
-correction on this engine. The correction constant is **2^32**, not 2^31:
-2^31 is the *wrap point* of a signed 32-bit counter (the documented interface
-model; the host's actual arithmetic is wider).
+wrap-span read were all positive). **Terminal ground truth (static RE of
+AI 30.6.0 ScCore.dll, re-ai-sc):** the counter is **QueryPerformanceCounter**
+(freq captured once via QPF); `Thread::getHiResTimer` computes the delta as a
+**full 64-bit subtract** of the last-read QPC stamp (per-thread TLS,
+`Context+0xa0`); `Time::getHiResTimer` converts to µs via double math
+`(double)QPC/freq*1000000.0` cast to int64 — a negative read is structurally
+impossible on this build (the official "signed 32-bit µs counter" wording is
+contradicted; the 32-bit getTicks API is a separate path). The `'correct'`
++2^32 policy is therefore a deterministic **safety net for fake/adversarial
+sources**, not a live-path correction on this engine. The correction constant
+is **2^32**, not 2^31: 2^31 is the *wrap point* of a signed 32-bit counter
+(the documented interface model; the host's actual arithmetic is 64-bit).
 
 **Hard limit (documented, not fought):** the accumulator is authoritative only
 while reads occur at least once per ~35.8 min (2^31 µs). A longer gap can
