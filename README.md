@@ -75,6 +75,7 @@ Also from the same team: **[ArcFit.dev](https://arcfit.dev)**, deterministic arc
 
 - [Why ESTIMER?](#why-estimer)
 - [Features](#features)
+- [Get the Release](#get-the-release)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [API](#api)
@@ -117,6 +118,33 @@ ESTIMER solves all of it with **one accumulator**: every raw read advances a mon
 - **Live-verified in the real engine** — 56/56 engine checks pass on Illustrator 30.6.0 / ExtendScript 4.5.6 (`npm run live-verify`): prime/now/epoch, 100-read monotonicity, measureUs rejection, samples/median/best, stopwatch nesting, wrap-policy round-trip, sleep lanes, calibrate.
 - **Three lanes, one code path** — `engine` (`$.hiresTimer`, delta, wraps), `node` (`performance.now()`, absolute), `date` (ms wall clock, degraded) auto-detected at load; `setSource()` injects a fake source so wrap/negative-delta behavior is tested deterministically without 35-minute waits.
 - **No runtime dependencies, ES3-clean** — one 13.7 KB runtime file (`vendor-estimer.js`); no `let`/`const`/arrows/`Promise`/`Map`, no `"use strict"`, functions-only exports (esbuild IIFE getter quirk — see Engine quirks).
+
+---
+
+## Get the Release
+
+<div align="center">
+
+**All production bundles ship as GitHub release assets — this repo holds sources. Grab the runnable builds from the [Releases page](https://github.com/thelabcorner/es-timer/releases).**
+
+[![Latest stable](https://img.shields.io/github/v/release/thelabcorner/es-timer?label=Latest%20stable)](https://github.com/thelabcorner/es-timer/releases/latest)
+[![Release date](https://img.shields.io/github/release-date/thelabcorner/es-timer?label=Released)](https://github.com/thelabcorner/es-timer/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/thelabcorner/es-timer/total?label=Downloads)](https://github.com/thelabcorner/es-timer/releases)
+
+</div>
+
+**How it works, in three steps:**
+
+1. Open the [Releases page](https://github.com/thelabcorner/es-timer/releases).
+2. Pick the **latest stable** tag.
+3. Download the asset that matches your use case:
+
+| You are... | Take this release | And this asset |
+|---|---|---|
+| A script that wants the drop-in facade on `$.global` | Latest stable | `vendor-estimer.js` — assigns `$.global.ESTIMER` |
+| A bannerless IIFE for `$.evalFile` / COM eval | Latest stable | `ESTIMER.jsx` — defines `var ESTIMER` |
+| Node.js testing / tooling | Latest stable | `estimer-core.esm.mjs` — ESM core |
+| A fix that isn't released yet | Pre-release / `main` | Build from source: `npm run build` |
 
 ---
 
