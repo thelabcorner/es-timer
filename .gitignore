@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.idea/
+*.log
+__pycache__/
+*.pyc
+*.obj
+tests/.estimer-test.bundle.mjs
+tests/.estimer-fuzz.bundle.mjs
+tests/.estimer-callbacks.bundle.mjs
+tests/.estimer-vectors.bundle.mjs

@@ -1,0 +1,58 @@
+{
+  "name": "estimer",
+  "version": "1.0.0",
+  "description": "ESTIMER — $.hiresTimer facade for Adobe ExtendScript (ES3): prime/now microsecond delta clock with 32-bit wrap protection, measureUs rejection protocol, stats/median, nesting-safe stopwatch, imprecision-aware sleep, and a wall-clock lane for long spans",
+  "type": "module",
+  "main": "dist/estimer-core.esm.mjs",
+  "scripts": {
+    "build": "node estimer-build.mjs",
+    "test": "node tests/estimer-test.mjs",
+    "typecheck": "npx tsc --noEmit -p .",
+    "fuzz": "node tests/fuzz.mjs",
+    "benchmark": "node tests/benchmark.mjs",
+    "live-verify": "node tests/estimer-live-verify.mjs",
+    "prepublishOnly": "npm run build && npm run test && npm run fuzz && npm run live-verify"
+  },
+  "files": [
+    "dist/ESTIMER.jsx",
+    "dist/vendor-estimer.js",
+    "dist/estimer-core.esm.mjs",
+    "estimer-build.mjs",
+    "src/",
+    "tests/benchmark.mjs",
+    "tests/estimer-live-verify.mjs",
+    "tests/estimer-test-entry.ts",
+    "tests/estimer-test.mjs",
+    "tests/fuzz-entry.ts",
+    "tests/fuzz.mjs",
+    "tests/globals.d.ts",
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "tsconfig.json"
+  ],
+  "devDependencies": {
+    "esbuild": "^0.28.1",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "GPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thelabcorner/es-timer.git"
+  },
+  "keywords": [
+    "timer",
+    "hiresTimer",
+    "microseconds",
+    "delta",
+    "benchmark",
+    "measure",
+    "median",
+    "extendscript",
+    "es3",
+    "illustrator"
+  ]
+}
