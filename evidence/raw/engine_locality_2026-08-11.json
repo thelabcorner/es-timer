@@ -1,0 +1,87 @@
+{
+  "probe": "engine-locality set (G2/G7) + longdelta (G4) + scriptui (G7)",
+  "host": {"appVersion": "30.6.0", "appBuild": "109R", "os": "Windows/64 10.0"},
+  "results": [
+    {
+      "id": "main_first_read",
+      "whenIso": "2026-08-11T11:25:06",
+      "context": "COM eval --file in main engine (first uncontended access)",
+      "engineName": "main",
+      "firstReadUs": 675881881,
+      "secondReadUs": 1,
+      "thirdReadUs": 1
+    },
+    {
+      "id": "evalFile_targetengine_not_honored",
+      "whenIso": "2026-08-11T11:26:24",
+      "context": "COM eval --file probe_engine_fresh.jsx with #targetengine \"estimer_g2_fresh\" — routed via $.evalFile; directive NOT honored",
+      "engineName": "main",
+      "firstReadUs": 75642147,
+      "secondReadUs": 0,
+      "thirdReadUs": 0,
+      "interpretation": "delta since 11:25:08 (~78 s) — main delta clock continued; NO fresh engine created"
+    },
+    {
+      "id": "DoJavaScriptFile_targetengine_not_honored",
+      "whenIso": "2026-08-11T11:32:06",
+      "context": "COM call DoJavaScriptFile(probe_engine_viafile.jsx) with #targetengine \"estimer_g2_viafile\" — directive NOT honored",
+      "engineName": "main",
+      "firstReadUs": 36149200,
+      "secondReadUs": 3,
+      "thirdReadUs": 1,
+      "interpretation": "delta since last main read (~36 s) — main delta clock continued"
+    },
+    {
+      "id": "transient_first_read",
+      "whenIso": "2026-08-11T11:34:58",
+      "context": "debug --engine transient eval (ESD transport) — fresh engine created by debugger attach",
+      "engineName": "transient",
+      "firstReadUs": 13147054,
+      "secondReadUs": 4,
+      "thirdReadUs": 1,
+      "interpretation": "first read = transient engine age 13.15 s (created ~11:34:44.8 by debug attach) — independent clock, independent engine"
+    },
+    {
+      "id": "transient_second_eval",
+      "whenIso": "2026-08-11T11:35:16",
+      "context": "debug --engine transient eval again — same engine, separate invocation",
+      "engineName": "transient",
+      "firstReadUs": 17496676,
+      "secondReadUs": 2,
+      "thirdReadUs": 2,
+      "interpretation": "delta since previous eval's last read (~17.5 s) — clock continues across invocations within the same engine"
+    },
+    {
+      "id": "main_via_debug_transport",
+      "whenIso": "2026-08-11T11:35:17",
+      "context": "debug --engine main eval (ESD transport, different route than COM eval)",
+      "engineName": "main",
+      "firstReadUs": 1092925,
+      "secondReadUs": 2,
+      "interpretation": "~1.09 s delta — short gap because a peer (pid 132776) had touched main just before; same clock as COM eval route"
+    },
+    {
+      "id": "scriptui_callback",
+      "whenIso": "2026-08-11T11:35:53",
+      "context": "probe_scriptui_callback.jsx — ScriptUI button onClick via notify()",
+      "engineName": "main",
+      "mainThreadPrimeUs": 36494760,
+      "callbackFirstReadUs": 15586,
+      "callbackSecondReadUs": 2,
+      "wallGapMs": 15,
+      "interpretation": "callback first read 15.6 ms ≈ wall gap 15 ms — callback shares the main engine's delta clock (same thread)"
+    },
+    {
+      "id": "g4_longdelta_60s",
+      "whenIso": "2026-08-11T11:36:50",
+      "context": "probe_g4_longdelta.jsx — 60 s $.sleep span",
+      "engineName": "main",
+      "sleepMs": 60000,
+      "firstReadUs": 57089552,
+      "deltaAfterSleepUs": 64330333,
+      "dateDeltaMs": 64331,
+      "followUpDeltaUs": 32,
+      "interpretation": "delta over 64.3 s span = 64,330,333 us vs Date 64,331 ms (ratio 0.99999) — deltas stay accurate over minute-scale spans; follow-up 32 us = no jump"
+    }
+  ]
+}

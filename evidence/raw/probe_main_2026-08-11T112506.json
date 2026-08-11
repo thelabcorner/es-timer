@@ -1,0 +1,61 @@
+{
+  "probe": "probe_hirestimer.jsx (main engine, uncontended first access)",
+  "whenIso": "2026-08-11T11:25:06",
+  "host": {
+    "appVersion": "30.6.0",
+    "appBuild": "109R",
+    "engineName": "main",
+    "engineVersion": "4.5.6",
+    "engineBuild": "80.1",
+    "os": "Windows/64 10.0",
+    "locale": "en_US"
+  },
+  "engineCreationEstimate": "~2026-08-11T11:13:50 (firstReadUs == engine age 675.9 s before 11:25:06)",
+  "g1": {
+    "firstReadUs": 675881881,
+    "secondReadUs": 1,
+    "thirdReadUs": 1,
+    "interpretation": "first read = ExtendScript engine age in us (675.9 s ~= 11.26 min), NOT process uptime (9.2 h); NOT ~0. Must be discarded as a sample."
+  },
+  "g6_readOverhead": {
+    "n": 250,
+    "medianUs": 1,
+    "meanUs": 1.016,
+    "minUs": 0,
+    "p10Us": 1,
+    "p50Us": 1,
+    "p90Us": 1,
+    "p99Us": 2,
+    "maxUs": 9
+  },
+  "g5_monotonicity": {
+    "n": 10000,
+    "negative": 0,
+    "zero": 2758,
+    "positive": 7242,
+    "nonIncrease": 2758,
+    "minUs": 0,
+    "maxUs": 43,
+    "negSamples": [],
+    "hugeSamples": [],
+    "interpretation": "no negative deltas in 10k consecutive reads; 27.6% zero (sub-us reads round down); max 43 us (scheduler jitter)"
+  },
+  "g3_sleepInclusion": {
+    "sleepMs": 200,
+    "hiresDeltaUs": 212726,
+    "dateDeltaMs": 214,
+    "followUpDeltaUs": 48,
+    "interpretation": "sleep time IS included (wall-based); 212726 us vs 214 ms Date; follow-up 48 us = no clock jump"
+  },
+  "g8_accuracy": [
+    {"sleepMs": 50,  "hiresUs": 61382,  "dateMs": 61,  "ratio": 1.00626229508197},
+    {"sleepMs": 100, "hiresUs": 106686, "dateMs": 107, "ratio": 0.99706542056075},
+    {"sleepMs": 250, "hiresUs": 277325, "dateMs": 277, "ratio": 1.00117328519856},
+    {"sleepMs": 500, "hiresUs": 537187, "dateMs": 538, "ratio": 0.99848884758364}
+  ],
+  "g4_spacedReads": [
+    {"sleepMs": 500, "hiresDeltaUs": 531200},
+    {"sleepMs": 500, "hiresDeltaUs": 534625},
+    {"sleepMs": 500, "hiresDeltaUs": 540057}
+  ]
+}

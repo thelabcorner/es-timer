@@ -1,0 +1,344 @@
+{
+  "median9-noop": [
+    {
+      "ok": true,
+      "lane": "median9-noop",
+      "env": "__ENV__",
+      "engine": "4.5.6",
+      "host": "Adobe Illustrator 30.6.0",
+      "lane_": "engine",
+      "samples": {
+        "medianUs": 99,
+        "minUs": 97,
+        "maxUs": 102,
+        "p95Us": 102,
+        "meanUs": 99.2222222222222,
+        "count": 9,
+        "rejected": 0
+      },
+      "raw": [
+        97,
+        101,
+        102,
+        100,
+        100,
+        98,
+        99,
+        99,
+        97
+      ],
+      "note": "full median-of-9 protocol (prime + 9 samples + validation + median)",
+      "describe": {
+        "lane": "engine",
+        "engine": "4.5.6",
+        "wrapPolicy": "correct",
+        "primed": true,
+        "reads": 337,
+        "calibratedUs": 0
+      }
+    },
+    {
+      "ok": true,
+      "lane": "median9-noop",
+      "env": "__ENV__",
+      "engine": "4.5.6",
+      "host": "Adobe Illustrator 30.6.0",
+      "lane_": "engine",
+      "samples": {
+        "medianUs": 98,
+        "minUs": 97,
+        "maxUs": 100,
+        "p95Us": 100,
+        "meanUs": 98.5555555555556,
+        "count": 9,
+        "rejected": 0
+      },
+      "raw": [
+        100,
+        99,
+        98,
+        100,
+        98,
+        98,
+        97,
+        100,
+        97
+      ],
+      "note": "full median-of-9 protocol (prime + 9 samples + validation + median)",
+      "describe": {
+        "lane": "engine",
+        "engine": "4.5.6",
+        "wrapPolicy": "correct",
+        "primed": true,
+        "reads": 337,
+        "calibratedUs": 0
+      }
+    },
+    {
+      "ok": true,
+      "lane": "median9-noop",
+      "env": "__ENV__",
+      "engine": "4.5.6",
+      "host": "Adobe Illustrator 30.6.0",
+      "lane_": "engine",
+      "samples": {
+        "medianUs": 97,
+        "minUs": 95,
+        "maxUs": 101,
+        "p95Us": 101,
+        "meanUs": 97.5555555555556,
+        "count": 9,
+        "rejected": 0
+      },
+      "raw": [
+        98,
+        98,
+        96,
+        96,
+        101,
+        97,
+        97,
+        100,
+        95
+      ],
+      "note": "full median-of-9 protocol (prime + 9 samples + validation + median)",
+      "describe": {
+        "lane": "engine",
+        "engine": "4.5.6",
+        "wrapPolicy": "correct",
+        "primed": true,
+        "reads": 337,
+        "calibratedUs": 0
+      }
+    }
+  ],
+  "measureUs-noop": [
+    {
+      "ok": true,
+      "lane": "measureUs-noop",
+      "env": "__ENV__",
+      "engine": "4.5.6",
+      "host": "Adobe Illustrator 30.6.0",
+      "lane_": "engine",
+      "calibrateUs": 2,
+      "samples": {
+        "medianUs": 9,
+        "minUs": 9,
+        "maxUs": 10,
+        "p95Us": 10,
+        "meanUs": 9.44444444444444,
+        "count": 9,
+        "rejected": 0
+      },
+      "raw": [
+        9,
+        10,
+        10,
+        9,
+        10,
+        9,
+        9,
+        9,
+        10
+      ],
+      "note": "facade read overhead via measureUs (prime + read)",
+      "describe": {
+        "lane": "engine",
+        "engine": "4.5.6",
+        "wrapPolicy": "correct",
+        "primed": true,
+        "reads": 260,
+        "calibratedUs": 2
+      }
+    },
+    {
+      "ok": true,
+      "lane": "measureUs-noop",
+      "env": "__ENV__",
+      "engine": "4.5.6",
+      "host": "Adobe Illustrator 30.6.0",
+      "lane_": "engine",
+      "calibrateUs": 2,
+      "samples": {
+        "medianUs": 10,
+        "minUs": 9,
+        "maxUs": 10,
+        "p95Us": 10,
+        "meanUs": 9.55555555555556,
+        "count": 9,
+        "rejected": 0
+      },
+      "raw": [
+        9,
+        10,
+        9,
+        10,
+        10,
+        10,
+        9,
+        10,
+        9
+      ],
+      "note": "facade read overhead via measureUs (prime + read)",
+      "describe": {
+        "lane": "engine",
+        "engine": "4.5.6",
+        "wrapPolicy": "correct",
+        "primed": true,
+        "reads": 260,
+        "calibratedUs": 2
+      }
+    },
+    {
+      "ok": true,
+      "lane": "measureUs-noop",
+      "env": "__ENV__",
+      "engine": "4.5.6",
+      "host": "Adobe Illustrator 30.6.0",
+      "lane_": "engine",
+      "calibrateUs": 2,
+      "samples": {
+        "medianUs": 10,
+        "minUs": 9,
+        "maxUs": 10,
+        "p95Us": 10,
+        "meanUs": 9.55555555555556,
+        "count": 9,
+        "rejected": 0
+      },
+      "raw": [
+        10,
+        10,
+        10,
+        9,
+        9,
+        10,
+        9,
+        9,
+        10
+      ],
+      "note": "facade read overhead via measureUs (prime + read)",
+      "describe": {
+        "lane": "engine",
+        "engine": "4.5.6",
+        "wrapPolicy": "correct",
+        "primed": true,
+        "reads": 260,
+        "calibratedUs": 2
+      }
+    }
+  ],
+  "now-read": [
+    {
+      "ok": true,
+      "lane": "now-read",
+      "env": "__ENV__",
+      "engine": "4.5.6",
+      "host": "Adobe Illustrator 30.6.0",
+      "lane_": "engine",
+      "samples": {
+        "medianUs": 4,
+        "minUs": 4,
+        "maxUs": 5,
+        "p95Us": 5,
+        "meanUs": 4.44444444444444,
+        "count": 9,
+        "rejected": 0
+      },
+      "raw": [
+        4,
+        5,
+        5,
+        5,
+        4,
+        5,
+        4,
+        4,
+        4
+      ],
+      "note": "bare now() read",
+      "describe": {
+        "lane": "engine",
+        "engine": "4.5.6",
+        "wrapPolicy": "correct",
+        "primed": true,
+        "reads": 43,
+        "calibratedUs": 0
+      }
+    },
+    {
+      "ok": true,
+      "lane": "now-read",
+      "env": "__ENV__",
+      "engine": "4.5.6",
+      "host": "Adobe Illustrator 30.6.0",
+      "lane_": "engine",
+      "samples": {
+        "medianUs": 5,
+        "minUs": 4,
+        "maxUs": 5,
+        "p95Us": 5,
+        "meanUs": 4.55555555555556,
+        "count": 9,
+        "rejected": 0
+      },
+      "raw": [
+        5,
+        5,
+        5,
+        4,
+        5,
+        4,
+        4,
+        4,
+        5
+      ],
+      "note": "bare now() read",
+      "describe": {
+        "lane": "engine",
+        "engine": "4.5.6",
+        "wrapPolicy": "correct",
+        "primed": true,
+        "reads": 43,
+        "calibratedUs": 0
+      }
+    },
+    {
+      "ok": true,
+      "lane": "now-read",
+      "env": "__ENV__",
+      "engine": "4.5.6",
+      "host": "Adobe Illustrator 30.6.0",
+      "lane_": "engine",
+      "samples": {
+        "medianUs": 5,
+        "minUs": 4,
+        "maxUs": 5,
+        "p95Us": 5,
+        "meanUs": 4.55555555555556,
+        "count": 9,
+        "rejected": 0
+      },
+      "raw": [
+        5,
+        4,
+        5,
+        5,
+        4,
+        4,
+        5,
+        4,
+        5
+      ],
+      "note": "bare now() read",
+      "describe": {
+        "lane": "engine",
+        "engine": "4.5.6",
+        "wrapPolicy": "correct",
+        "primed": true,
+        "reads": 43,
+        "calibratedUs": 0
+      }
+    }
+  ]
+}
