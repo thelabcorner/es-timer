@@ -69,7 +69,16 @@ raw QPC ticks exist only transiently inside `Time::getHiResTimer`'s double
 math `(double)QPC/freq*1000000.0` cast to int64 — a negative read is
 structurally impossible on this build (the official "signed 32-bit µs
 counter" wording is contradicted; the 32-bit getTicks API is a separate
-path). The `'correct'`
+path). **Cross-host parity (static RE of PS 2026 ScCore.dll 4.5.12.1/82.4,
+re-ps-sc):** identical structure — QPC counter, full 64-bit signed delta
+(`SUB RAX, qword [RBX+0xa0]`), TLS last-read, double→µs conversion, no
+structural negative on either host. One nuance: PS zero-inits the last-read
+stamp (first read = µs-since-boot) whereas AI primes it with engine-startup
+µs — both positive, both discarded by `prime()`. The only theoretical
+negative path on either host is the dormant wall-clock fallback
+(GetSystemTimeAsFileTime/UTCTime, needs QPF failure) plus a backwards NTP
+step — which is exactly the case the `'correct'`/`'reject'` policies defend
+against. The `'correct'`
 +2^32 policy is therefore a deterministic **safety net for fake/adversarial
 sources**, not a live-path correction on this engine. The correction constant
 is **2^32**, not 2^31: 2^31 is the *wrap point* of a signed 32-bit counter
