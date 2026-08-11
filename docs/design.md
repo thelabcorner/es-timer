@@ -53,11 +53,18 @@ sum of the inner intervals.
   accumulator never moves backwards.
 - **`'reject':`** negative deltas never advance the accumulator.
 
-`ASSUMPTION` (G4, unprobed): a delta-clock read for a true interval in
-`[2^31, 2^32)` comes back **negative** (signed storage), so +2^32 recovers it.
-The official "signed 32-bit" wording supports this; the evidence member should
-probe the sign/width live. The correction constant is **2^32**, not 2^31:
-2^31 is the *wrap point* (where the signed value turns negative).
+**CONFIRMED** (G4, live probes + static RE on AI 30.6.0): reads never come
+back negative on this engine. The `$` property dispatcher (`FUN_1800197d0`,
+case 0x15) calls the host import `ScCore::Thread::getHiResTimer()` and stores
+the result as a **64-bit double** (`ScCore::Variant::setDouble`) — there is no
+signed-32-bit delta arithmetic in ExtendScript.dll, all host-side, so the wrap
+never surfaces as a negative read (verified live: 10k consecutive reads,
+wrapped-territory 60 s spans, a wrap-straddling interval, and the transient
+wrap-span read were all positive). The `'correct'` +2^32 policy is therefore a
+deterministic **safety net for fake/adversarial sources**, not a live-path
+correction on this engine. The correction constant is **2^32**, not 2^31:
+2^31 is the *wrap point* of a signed 32-bit counter (the documented interface
+model; the host's actual arithmetic is wider).
 
 **Hard limit (documented, not fought):** the accumulator is authoritative only
 while reads occur at least once per ~35.8 min (2^31 µs). A longer gap can
@@ -140,9 +147,13 @@ checks on the ESM lane (wrap ±2^32, reject policy, prime/epoch, nesting,
 validation, stats edges, sleep ≥ target, lane detection); 30 checks executing
 the **ES5 IIFE bundle** (esbuild `--global-name=ESTIMER --target=es5` — the
 exact engine-lane artifact) — export shape, real-clock advance, wrap
-correction. **Not validated:** live Illustrator behavior (no engine here) —
-the evidence member's probes own G1-G8 confirmation; the wrap sign/width
-(`ASSUMPTION` above) is the one behavior the probes must check first.
+correction. **Later confirmed live and by static RE** (post-release, evidence
+member + Ghidra): 56/56 engine checks; G1-G8 probes; the getter is the host
+import `ScCore::Thread::getHiResTimer()` — value stored as a 64-bit double, no
+wrap arithmetic in ExtendScript.dll — so wrapped reads never come back
+negative on AI 30.6.0 (see §3). Not run in this session at t1-core time:
+live Illustrator behavior (no engine here) — supplied afterwards by the
+evidence member's probes.
 
 ## 10. Decision summary
 
