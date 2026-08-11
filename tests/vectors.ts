@@ -90,9 +90,15 @@ export function refClock(ticks: number[], policy: RefPolicy): number[] {
 }
 
 // ---- fake TimerSource factory ----------------------------------------------
-// A scripted delta-clock source modeling $.hiresTimer (raw IS µs since the
-// previous access; signed 32-bit). Reads beyond the script return the LAST
-// scripted value, so an unexpected extra read cannot inject a wild number.
+// A scripted delta-clock source modeling the $-property contract (raw IS µs
+// since the previous access) under an ADVERSARIAL signed-32-bit source.
+// NOTE: this models the POLICY contract (setWrapPolicy 'correct'/'reject' as
+// defensive code paths), NOT verified engine behavior — the AI 30.6.0 host
+// ScCore is 64-bit QPC-based with 64-bit delta arithmetic, so negative reads
+// are structurally impossible and the policy never fires live (see
+// estimer/evidence/re-ai-sccore.md; the official "signed 32-bit µs counter"
+// doc is contradicted). Reads beyond the script return the LAST scripted
+// value, so an unexpected extra read cannot inject a wild number.
 
 export interface FakeTimerSource {
   readUs(): number;

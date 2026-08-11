@@ -83,6 +83,8 @@ void FUN_18006c190(char param_1)
 
 ## 4. THE DELTA — per-thread `Context+0xa0`, **64-bit** subtraction
 
+**Getter-role distinction (for the record):** the two exported getters have different jobs. `Time::getHiResTimer` (impl `FUN_18006c240`) is the **counter→µs converter** — it reads QPC and produces the absolute int64 µs value. `Thread::getHiResTimer` (impl `FUN_18006c0d0`) is the **delta wrapper** — it calls the Time variant and returns `now − last-read`. ExtendScript.dll's `$` dispatcher calls the **Thread** variant (per the ExtendScript.dll RE), so the value handed to a script is already a 64-bit µs delta; the µs conversion happened host-side in the Time variant, and the dispatcher's `setDouble` cast adds no arithmetic. No behavioral consequence — both legs are 64-bit and order-preserving.
+
 `ScCore::Thread::getHiResTimer` impl `FUN_18006c0d0` @ 0x18006c0d0 (decompiled verbatim):
 
 ```c
@@ -149,11 +151,11 @@ Three priming sites:
 
 Evidence chain: the counter is QPC-derived µs computed in **double** and carried as **int64**; the delta is a **64-bit signed** `now − last` with the last-read stored as int64 in per-thread TLS Context. QPC is monotonic non-decreasing on modern Windows, and the double→int64 conversion (`/freq * 1e6`, all positive constants) is order-preserving, so `now ≥ last` always ⇒ delta ≥ 0 always. The 32-bit `getTicks` API (GetTickCount-based, with explicit wrap compensation `+0x51eb85` per 2^32-ms wrap) is a separate coarse timer and is **not** on the hiresTimer path. The only theoretical negative would require the dormant UTCTime fallback (QPF failing) *and* the wall clock being set backward between two reads — not reachable on this build in practice.
 
-**Library implication:** the official "signed 32-bit µs counter" documentation describes an older/other implementation. On AI 30.6.0 the host's counter is 64-bit; ESTIMER's "+2^32 on negative" policy is a **safety net, not a live necessity on AI 30.6.0** — it only has teeth if another host (e.g. PS's ScCore.dll, re-ps-sc's lane) computes a 32-bit wrap.
+**Library implication:** the official "signed 32-bit µs counter" documentation describes an older/other implementation (or stale metadata). On AI 30.6.0 the host's counter is 64-bit; ESTIMER's "+2^32 on negative" policy is a **safety net, not a live necessity on AI 30.6.0** — it only has teeth if another host (e.g. PS's ScCore.dll, re-ps-sc's lane) computes a 32-bit wrap. **ESTIMER's facade is sign-convention-agnostic by design and covers both cases identically with zero code change:** the 64-bit-AI host (negative structurally impossible; +2^32 branch never fires) and a hypothetical 32-bit-signed host (wrap real; +2^32 branch live) are both handled by the same correct-delta policy. Note for readers: ESTIMER's `WRAP_PERIOD_US` (2^32) / `WRAP_POINT_US` (2^31) constants describe the **policy correction constants**, not the engine counter width — on AI 30.6.0 the counter is 64-bit (this file).
 
-## 7. Comparison pair note (PS side)
+## 7. Comparison pair note (PS side) — CLOSED
 
-re-ps-ext has confirmed PS 2026's ExtendScript.dll is byte-for-byte the same `$`-dispatcher shape (case 0x15 → `ScCore::Thread::getHiResTimer()` → `setDouble`, zero arithmetic) and imports the same dual `Thread::`/`Time::` symbols. The PS host verdict therefore depends entirely on PS's ScCore.dll (735,728 B, 4.5.x — re-ps-sc's task). AI's host-side picture above is the direct comparison baseline.
+re-ps-ext has confirmed PS 2026's ExtendScript.dll is byte-for-byte the same `$`-dispatcher shape (case 0x15 → `ScCore::Thread::getHiResTimer()` → `setDouble`, zero arithmetic) and imports the same dual `Thread::`/`Time::` symbols. **re-ps-sc's host RE of PS's ScCore.dll (ScCore 4.5.12.1 / engine 82.4, PE64) is now complete and converges with this file: QPC counter, int64 µs via double math, full 64-bit signed delta (`SUB RAX,qword [RBX+0xa0]` @ 0x180069ec0), negative read structurally impossible** — see `estimer/evidence/re-ps-sccore.md`. One behavioral difference: PS zero-inits `Context+0xa0` (first read = raw µs-since-boot, positive) whereas AI primes it at init (first read ≈ 0 / engine-startup); both positive, matching live probes. **Cross-host closure: neither AI nor PS can produce a negative hiresTimer read — ESTIMER's +2^32 'correct' branch is a confirmed never-firing safety net on both hosts.**
 
 ## 8. Confidence & limitations
 
