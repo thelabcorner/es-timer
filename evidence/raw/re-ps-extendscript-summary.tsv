@@ -1,0 +1,6 @@
+string_targets
+18007b140	hiresTimer
+import_targets
+EXTERNAL:00000005	GetSystemTimeAsFileTime
+EXTERNAL:00000007	QueryPerformanceCounter
+function_count	2	decompiled	2	failures	0

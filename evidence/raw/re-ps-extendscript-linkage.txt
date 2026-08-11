@@ -1,0 +1,56 @@
+hiresTimer_string	18007b140
+
+string_data_refs
+18007ab10	DATA
+
+table_windows
+window@18007ab10
+  18007ab10	18007b140
+  18007ab18	0x15
+  18007ab20	0x0
+  18007ab28	18007b150
+  18007ab30	180079730
+  18007ab38	0x10
+  18007ab40	0x0
+  18007ab48	18007b190
+
+table_referencing_functions
+
+gethires_callers
+18006f490	getHiResTimer
+18006f61e	getHiResTimer
+
+tls_imports
+(none)
+
+decompiled
+
+// ===== getHiResTimer @ 18006f490 =====
+
+__int64 __cdecl ScCore::Thread::getHiResTimer(void)
+
+{
+  __int64 _Var1;
+  
+                    /* WARNING: Could not recover jumptable at 0x00018006f490. Too many branches */
+                    /* WARNING: Treating indirect jump as call */
+  _Var1 = getHiResTimer();
+  return _Var1;
+}
+
+
+
+// ===== getHiResTimer @ 18006f61e =====
+
+__int64 __cdecl ScCore::Time::getHiResTimer(void)
+
+{
+  __int64 _Var1;
+  
+                    /* WARNING: Could not recover jumptable at 0x00018006f61e. Too many branches */
+                    /* WARNING: Treating indirect jump as call */
+  _Var1 = getHiResTimer();
+  return _Var1;
+}
+
+
