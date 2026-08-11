@@ -63,11 +63,13 @@ wrapped-territory 60 s spans, a wrap-straddling interval, and the transient
 wrap-span read were all positive). **Terminal ground truth (static RE of
 AI 30.6.0 ScCore.dll, re-ai-sc):** the counter is **QueryPerformanceCounter**
 (freq captured once via QPF); `Thread::getHiResTimer` computes the delta as a
-**full 64-bit subtract** of the last-read QPC stamp (per-thread TLS,
-`Context+0xa0`); `Time::getHiResTimer` converts to µs via double math
-`(double)QPC/freq*1000000.0` cast to int64 — a negative read is structurally
-impossible on this build (the official "signed 32-bit µs counter" wording is
-contradicted; the 32-bit getTicks API is a separate path). The `'correct'`
+**full 64-bit subtract** of the last-read µs stamp (int64, QPC-derived, stored
+in per-thread TLS `Context+0xa0` after conversion by `Time::getHiResTimer`);
+raw QPC ticks exist only transiently inside `Time::getHiResTimer`'s double
+math `(double)QPC/freq*1000000.0` cast to int64 — a negative read is
+structurally impossible on this build (the official "signed 32-bit µs
+counter" wording is contradicted; the 32-bit getTicks API is a separate
+path). The `'correct'`
 +2^32 policy is therefore a deterministic **safety net for fake/adversarial
 sources**, not a live-path correction on this engine. The correction constant
 is **2^32**, not 2^31: 2^31 is the *wrap point* of a signed 32-bit counter
