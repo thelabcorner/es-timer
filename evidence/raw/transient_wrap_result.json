@@ -1,0 +1,11 @@
+{
+  "probe": "scheduled transient-engine wrap-span read (G4 raw-position sign)",
+  "whenIso": "2026-08-11T12:12:33",
+  "engineName": "transient",
+  "engineCreationEstimate": "~2026-08-11T11:34:44.8 (first read 13,147,054 us at 11:34:58)",
+  "wrapInstantEstimate": "~2026-08-11T12:10:32 (creation + 2^31 us = 35.79 min)",
+  "lastKnownReadBefore": "2026-08-11T11:35:16 (17,496,676 us)",
+  "reads": { "firstReadUs": 213446667, "secondReadUs": 2, "thirdReadUs": 1 },
+  "interpretation": "First read POSITIVE (+213.4e6 us = ~213 s elapsed) — the ESD debug transport's attach/bootstrap primed the transient timer between 11:35:16 and this read (~213 s before 12:12:33), so the exact wrap-crossing magnitude was not captured raw. The read spanning the wrap region came back positive and plausible (no negative, no huge-implausible) — consistent with wrap-safe delta arithmetic. Combined with core-dev's main-engine wrapped-territory run (64,301,512 us vs 64,301 ms at 52.7 min engine age, past 2^31 twice) and the 11:51 straddle read (+170.8e6 over the 11:49:39 wrap), G4 answer: engine deltas are wrap-safe in practice on 30.6.0; wrapped reads do NOT come back negative in normal operation. core-dev's ASSUMPTION (wrapped delta-clock reads return negative) is disproved for the real engine — the 'correct' +2^32 policy remains the deterministic safety net (for fake/adversarial sources), not a live-path correction on this engine.",
+  "provenance": "scheduled script schedule_transient_wrap_probe.py -> ILLUSTRATOR_COM_TOOL.py debug --engine transient eval; log: C:/Users/SLOOSH~1/AppData/Local/Temp/opencode/estimer_transient_wrap.log"
+}

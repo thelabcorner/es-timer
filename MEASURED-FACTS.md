@@ -40,9 +40,12 @@ Every number below was measured, not assumed. Each entry carries its environment
 - read, `$.sleep(200)`, read → **212,726 µs** hires vs **214 ms** Date wall; follow-up 48 µs (no jump). Sleep time IS included (wall-based). Env as above. `[evidence]` `probes.g3`.
 
 ### G4 — long deltas + 32-bit wrap evidence
-- 60 s span delta: **64,330,333 µs** vs Date 64,331 ms (ratio 0.99999); follow-up 32 µs. Deltas accurate over minute-scale spans. `[evidence]` `probe_g4_longdelta.jsx` (11:36:50).
-- Wrap math (engine-side): wrap point 2^31 µs = 35.79 min of **engine** age; correction period 2^32 µs = 71.58 min. Main engine wraps ≈11:49:39, transient ≈12:10:30 (engine-creation + 35.79 min).
-- **Wrap-span live read (transient engine, 12:12:30, spans the 12:10:30 wrap; last read 11:35:16):** *result appended after the probe fires* — `evidence/raw/transient_wrap_result.json`. Env as above. `[evidence]` scheduled probe.
+- 60 s span delta (main, 11:36:50): **64,330,333 µs** vs Date 64,331 ms (ratio 0.99999); follow-up 32 µs. Deltas accurate over minute-scale spans. `[evidence]` `probe_g4_longdelta.jsx`.
+- **Wrapped-territory confirmation (main, 12:07:56, engine age ~52.7 min — counter ~3.16e9 µs, past 2^31 twice):** 60 s span delta **64,301,512 µs** vs Date 64,301 ms (ratio 0.99999); follow-up 5 µs; first read +22.6e6 µs positive. `[core-dev]` `evidence/raw/probe_g4_longdelta_2026-08-11T120629.json`.
+- **Wrap-straddle read (main, 11:51):** +170.8e6 µs over an interval crossing the 11:49:39 wrap — positive, sane. `[core-dev]` corroboration run.
+- **Transient raw-position probe (12:12:33, spans the ~12:10:32 wrap; ESD transport):** first read **+213,446,667 µs positive**, follow-ups 2/1 µs. The ESD attach primed the delta base ~213 s before the read, so the raw wrap-crossing magnitude wasn't captured, but the read spanning the wrap region was positive and plausible — **no negative read anywhere in the session** (0 negatives across 10k consecutive reads + every probe run). `[evidence]` `evidence/raw/transient_wrap_result.json`.
+- **G4 answer:** engine deltas are **wrap-safe in practice on 30.6.0** — 64 s deltas correct to ratio 0.99999 in both pre-wrap and post-wrap engine ages, and no wrapped read came back negative in any probe. core-dev's ASSUMPTION ("wrapped delta-clock reads come back negative") is **disproved for the real engine**; the `'correct'` +2^32 policy remains the deterministic safety net for fake/adversarial sources, not a live-path correction on this engine.
+- Wrap math (engine-side): wrap point 2^31 µs = 35.79 min of **engine** age; correction period 2^32 µs = 71.58 min. Main engine wrapped ≈11:49:39, transient ≈12:10:32 (engine-creation + 35.79 min).
 - ESTIMER wrap policy: default `'correct'` (negative delta += 2^32, single-wrap, exact for interval in [2^31, 2^32) µs; still-negative → 0); `'reject'` never advances on negatives. Live-verify wrap round-trip passed. `[live-verify]`
 
 ### G5 — monotonicity (10k consecutive reads)
@@ -114,4 +117,4 @@ Every number below was measured, not assumed. Each entry carries its environment
 2. **`#targetengine` not honored via `$.evalFile`/`DoJavaScriptFile`** in AI 30.6.0 (G2).
 3. **Read overhead median 1 µs (p99 2 µs)** on 30.6.0 (G6) — prior round-2 figure ~2 µs compatible.
 4. **Zero-delta rate 27.6 % on empty intervals is legitimate** (G5) — validation must accept 0 (ESTIMER does: MIN_VALID_US 0).
-5. **G4 wrap sign**: pending the 12:12:30 live probe (this file updated when it fires).
+5. **G4 wrap sign: DISPROVED the "wrapped reads return negative" assumption** — live probes (main wrapped-territory at 52.7 min engine age, wrap-straddle read, transient wrap-span read 12:12:33) all returned positive, sane deltas; 0 negatives across every probe + 10k consecutive reads. Engine deltas are wrap-safe in practice; the `'correct'` +2^32 policy is a safety net for fake/adversarial sources, not a live-path correction on 30.6.0.

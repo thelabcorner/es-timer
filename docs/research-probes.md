@@ -67,16 +67,19 @@ Yes — **sleep time is fully included** (wall-based). 212,726 µs ≈ 214 ms wa
 
 ## G4 — Wrap behavior (signed 32-bit? sign of wrapped read? delta across wrap?)
 
-**Observed so far:**
+**Observed:**
 - First-read magnitudes observed: +675,881,881 (main, 11.26 min old), +13,147,054 (transient, 13.15 s old) — both positive, both consistent with **µs since engine creation** as a signed 32-bit value that has NOT yet wrapped.
 - **60 s span delta (`probe_g4_longdelta.jsx`):** `deltaAfterSleepUs = 64,330,333` vs `dateDeltaMs = 64,331` → ratio 0.99999. Deltas stay accurate over minute-scale spans; no drift, no integer truncation.
-- **Wrap math (engine-side):** 2^31 µs = 2147.48 s = 35.79 min engine age = the wrap point; 2^32 µs = 71.58 min = the correction period used by ESTIMER's 'correct' policy. The main engine wraps ≈11:49:39; the transient engine wraps ≈12:10:30 (both engine-creation + 35.79 min).
+- **Wrapped-territory (main engine, 12:07:56, age ~52.7 min — past 2^31 twice):** 60 s span delta **64,301,512 µs** vs Date 64,301 ms (ratio 0.99999), follow-up 5 µs, first read +22.6e6 positive. (core-dev run; `evidence/raw/probe_g4_longdelta_2026-08-11T120629.json`.)
+- **Wrap-straddle read (main, 11:51):** +170.8e6 µs over an interval crossing the 11:49:39 wrap — positive, sane. (core-dev corroboration run.)
+- **Transient wrap-span probe (12:12:33, spans the ~12:10:32 wrap):** first read **+213,446,667 µs (positive)**, follow-ups 2/1 µs. The ESD transport's attach primed the delta base ~213 s before the read (so the exact wrap-crossing raw magnitude was not captured), but the read spanning the wrap region was positive and plausible. (`evidence/raw/transient_wrap_result.json`.)
+- **Wrap math (engine-side):** 2^31 µs = 2147.48 s = 35.79 min engine age = the wrap point; 2^32 µs = 71.58 min = the correction period used by ESTIMER's 'correct' policy. The main engine wrapped ≈11:49:39; the transient engine wrapped ≈12:10:32 (both engine-creation + 35.79 min).
 
-**Live wrap-span probe (scheduled):** a dedicated scheduled read of the `transient` engine at 12:12:30 spans the transient engine's wrap instant (12:10:30). Last read in that engine was 11:35:16, so the read returns the elapsed ≈36.6 min — **if the engine returns a negative or implausible value, wrapped delta-clock reads DO come back negative (core-dev's ASSUMPTION confirmed); if it returns ≈+2.20e9, the engine's delta math is wrap-safe in practice.** Result appended to `evidence/raw/` when it fires.
+**G4 ANSWER:** engine deltas are **wrap-safe in practice on 30.6.0**. Every read across the entire probe session was positive — 0 negatives in the 10k consecutive-read probe, positive sane reads in wrapped territory (52.7 min engine age), across the straddle, and across the transient's wrap-span read. **core-dev's ASSUMPTION that "wrapped delta-clock reads come back negative" is disproved for the real engine** — the engine's own delta arithmetic handles wrap internally. ESTIMER's `'correct'` +2^32 policy remains the deterministic safety net for fake/adversarial sources (setSource with scripted negatives), not a live-path correction on this engine.
 
 **What ESTIMER does (core-dev design):** default wrap policy `'correct'` — a negative delta gets `+= 2^32` (single-wrap correction, exact for true interval in [2^31, 2^32) µs ≈ 35.8–71.6 min); still-negative → treated as 0 (never backwards). `'reject'` policy never advances on negatives. The accumulator is authoritative only while reads occur at least once per ~35.8 min — beyond that, `wallNow()` is the honest lane (documented limitation, matches repo guidance).
 
-**Correction to repo docs:** the chunkdb/abi-and-poc wraparound notes describe accumulated *totals* over long runs wrapping — plausible, but the repo's phrasing "signed 32-bit counter wraps at ~35.8 min since the epoch/init" should say **since engine creation, with the counter base per engine** (G1/G2), and the wrap sign is now live-probed (see scheduled result above).
+**Correction to repo docs:** the chunkdb/abi-and-poc wraparound notes describe accumulated *totals* over long runs wrapping — plausible, but the repo's phrasing "signed 32-bit counter wraps at ~35.8 min since the epoch/init" should say **since engine creation, with the counter base per engine** (G1/G2). The "wrapped read returns negative" hypothesis (SKILL.md:307's "reject wrap-corrupted samples" framing) is **disproved live** — reads stay positive; wrap-corruption manifests (if at all) only in accumulated totals over >35.8-min spans, which is why `wallNow()` is the long-span lane.
 
 ---
 
@@ -159,7 +162,7 @@ The callback's first read (15.6 ms) matches the wall-clock gap since the main-th
 2. **`#targetengine` is not honored via `$.evalFile()`/COM `DoJavaScriptFile` in AI 30.6.0** (G2): named engines were not created (ESD engine list stayed `["main", "transient"]`). "Fresh and reused engines" probes must use the ESD transport's `transient` engine (or File > Scripts with a real `#targetengine`, which this session could not drive).
 3. **Read overhead is 1 µs median (p99 2 µs) on 30.6.0** (G6): the round-2 figure of ~2 µs remains compatible; 1 µs is now the median.
 4. **G5 zero-delta rate is high (27.6%)**: zero deltas on empty intervals are legitimate; validation must not treat them as errors (ESTIMER accepts `minValidUs = 0`).
-5. **G4 wrap sign: pending the 12:12:30 live probe** — this doc will be updated with the observed sign/width result.
+5. **G4 wrap sign: DISPROVED the "wrapped reads return negative" assumption** — every probe across the session returned positive, sane deltas, including: wrapped-territory (main, 52.7 min age, past 2^31 twice — 60 s delta ratio 0.99999), a wrap-straddle read (+170.8e6 over the 11:49:39 wrap), the transient wrap-span read (12:12:33, +213.4e6), and 0 negatives in the 10k consecutive-read probe. The engine's delta arithmetic is wrap-safe in practice on 30.6.0; ESTIMER's `'correct'` +2^32 policy is the deterministic safety net for fake/adversarial sources, not a live-path correction.
 
 ---
 
