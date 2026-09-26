@@ -1,0 +1,23 @@
+export default {
+  host: 'illustrator',
+  hostTypes: 'Illustrator/2022',
+  additionalTypes: ['./src/globals.d.ts'],
+  entry: 'src/jsx-entry.ts',
+  outfile: 'dist/vendor-estimer.js',
+  globalName: '__ESTIMER_ENTRY__',
+  target: 'illustrator',
+  requireTarget: false,
+  sourceLint: true,
+  typecheck: true,
+  normalize: true,
+  compatibilityTransforms: ['esbuild'],
+  compatibilityShims: [],
+  allowedMissingBuiltins: [],
+  allowedGlobalPatches: [],
+  prelude: [],
+  footer: [],
+  allowJson: false,
+  allowIncludes: false,
+  live: false,
+  liveLaunch: false
+};

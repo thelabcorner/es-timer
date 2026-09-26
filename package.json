@@ -11,7 +11,10 @@
     "fuzz": "node tests/fuzz.mjs",
     "benchmark": "node tests/benchmark.mjs",
     "live-verify": "node tests/estimer-live-verify.mjs",
-    "prepublishOnly": "npm run build && npm run test && npm run fuzz && npm run live-verify"
+    "estc:live-parse": "node ../extendscript-toolchain/bin/estc.mjs check dist/ESTIMER.jsx --no-target --live --launch && node ../extendscript-toolchain/bin/estc.mjs check dist/vendor-estimer.js --no-target --live --launch",
+    "verify": "npm run typecheck && npm run build && npm run test && npm run fuzz",
+    "release:gate": "npm run verify && npm run estc:live-parse && npm run live-verify",
+    "prepublishOnly": "npm run release:gate"
   },
   "files": [
     "dist/ESTIMER.jsx",
